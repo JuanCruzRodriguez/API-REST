@@ -1,71 +1,57 @@
-import { peliculas } from "../data/peliculas.js";
+import Pelicula from "../models/peliculasModel.js";
 
-const getPeliculas = (req, res) => {
-    let resultado = [...peliculas];
-    const { titulo, director } = req.query;
-
-    if (titulo) {
-        resultado = resultado.filter(p =>
-            p.titulo.toLowerCase().includes(titulo.toLowerCase())
-        );
+const getPeliculas = async (req, res) => {
+    try {
+        const peliculas = await Pelicula.find();
+        res.status(200).json({ msg: "ok", data: peliculas });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "No se pudieron obtener las películas" });
     }
-    if (director) {
-        resultado = resultado.filter(p =>
-            p.director.toLowerCase().includes(director.toLowerCase())
-        );
-    }
-
-    res.status(200).json({ msg: "ok", data: resultado });
-};
-
-const getPeliculaById = (req, res) => {
-    const pelicula = peliculas.find(p => p.id === req.params.id);
-    if (!pelicula) return res.status(404).json({ msg: "Película no encontrada" });
-    res.status(200).json({ msg: "ok", data: pelicula });
-};
-
-const postPelicula = (req, res) => {
-    const { titulo, descripcion, director, anio, genero, favorita } = req.body;
-    if (!titulo || !descripcion || !director || !anio || !genero) {
-        return res.status(400).json({ msg: "Faltan campos obligatorios" });
-    }
-
-    const newPelicula = {
-        id: (peliculas.length + 1).toString(),
-        titulo,
-        descripcion,
-        director,
-        anio,
-        genero,
-        favorita: favorita || false
     };
 
-    peliculas.push(newPelicula);
-    res.status(201).json({ msg: "Película creada", data: newPelicula });
-};
+    const getPeliculaById = async (req, res) => {
+    try {
+        const pelicula = await Pelicula.findById(req.params.id);
+        if (!pelicula) return res.status(404).json({ msg: "Película no encontrada" });
+        res.status(200).json({ msg: "ok", data: pelicula });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al buscar la película" });
+    }
+    };
 
-const putPelicula = (req, res) => {
-    const { id } = req.params;
-    const pelicula = peliculas.find(p => p.id === id);
-    if (!pelicula) return res.status(404).json({ msg: "Película no encontrada" });
+    const postPelicula = async (req, res) => {
+    try {
+        const pelicula = new Pelicula(req.body);
+        const data = await pelicula.save();
+        res.status(201).json({ msg: "Película creada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "No se pudo crear la película" });
+    }
+    };
 
-    const { titulo, descripcion, director, anio, genero, favorita } = req.body;
-    if (titulo) pelicula.titulo = titulo;
-    if (descripcion) pelicula.descripcion = descripcion;
-    if (director) pelicula.director = director;
-    if (anio) pelicula.anio = anio;
-    if (genero) pelicula.genero = genero;
-    if (favorita !== undefined) pelicula.favorita = favorita;
+    const putPelicula = async (req, res) => {
+    try {
+        const data = await Pelicula.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!data) return res.status(404).json({ msg: "Película no encontrada" });
+        res.status(200).json({ msg: "Película actualizada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar la película" });
+    }
+    };
 
-    res.status(200).json({ msg: "Película actualizada", data: pelicula });
-};
-
-const deletePelicula = (req, res) => {
-    const index = peliculas.findIndex(p => p.id === req.params.id);
-    if (index === -1) return res.status(404).json({ msg: "Película no encontrada" });
-
-    const eliminada = peliculas.splice(index, 1);
-    res.status(200).json({ msg: "Película eliminada", data: eliminada[0] });
+    const deletePelicula = async (req, res) => {
+    try {
+        const data = await Pelicula.findByIdAndDelete(req.params.id);
+        if (!data) return res.status(404).json({ msg: "Película no encontrada" });
+        res.status(200).json({ msg: "Película eliminada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar la película" });
+    }
 };
 
 export { getPeliculas, getPeliculaById, postPelicula, putPelicula, deletePelicula };

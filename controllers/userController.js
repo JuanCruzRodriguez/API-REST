@@ -1,40 +1,28 @@
-let users = [
-    { id: 1, name: "Carlos", email: "carlos@gmail.com" },
-    { id: 2, name: "Juan", email: "juan@gmail.com" },
-    { id: 3, name: "Julieta", email: "julieta@gmail.com" }
-];
+import User from "../models/userModel.js";
 
-const postUser = (req, res) => {
+const getUsers = async (req, res) => {
     try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-        res.status(400).json({ msg: "Faltan campos" });
-        return;
+        const users = await User.find();
+        res.status(200).json({ msg: "ok", data: users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "No se pudieron obtener los usuarios" });
     }
-
-    const newUser = {
-        id: users.length + 1,
-        name,
-        email,
-        password
     };
 
-    users.push(newUser);
-
-    res.status(201).json({ msg: "Usuario creado", data: newUser });
-    } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "No se pudo guardar el usuario" });
-    }
-};
-
-const getUsers = (req, res) => {
+    const postUser = async (req, res) => {
     try {
-    res.status(200).json({ msg: "ok", data: users });
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+        return res.status(400).json({ msg: "Faltan campos obligatorios" });
+        }
+        const user = new User({ name, email, password });
+        const data = await user.save();
+        res.status(201).json({ msg: "Usuario creado", data });
     } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "No se pudo obtener los usuarios" });
+        console.error(error);
+        res.status(500).json({ msg: "No se pudo crear el usuario" });
     }
 };
 
-export { postUser, getUsers };
+export { getUsers, postUser };

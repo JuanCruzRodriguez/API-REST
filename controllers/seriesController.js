@@ -1,47 +1,57 @@
-import { series } from "../data/series.js";
+import Serie from "../models/seriesModel.js";
 
-const getSeries = (req, res) => {
-    res.status(200).json({ msg: "ok", data: series });
-};
-
-const getSerieById = (req, res) => {
-    const serie = series.find(s => s.id === req.params.id);
-    if (!serie) return res.status(404).json({ msg: "Serie no encontrada" });
-    res.status(200).json({ msg: "ok", data: serie });
-};
-
-const postSerie = (req, res) => {
-    const { titulo, descripcion, director, anio, genero, temporadas, favorita } = req.body;
-    if (!titulo || !descripcion || !director || !anio || !genero || !temporadas) {
-        return res.status(400).json({ msg: "Faltan campos obligatorios" });
+const getSeries = async (req, res) => {
+    try {
+        const series = await Serie.find();
+        res.status(200).json({ msg: "ok", data: series });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "No se pudieron obtener las series" });
     }
-    const nuevaSerie = {
-        id: String(series.length + 1),
-        titulo,
-        descripcion,
-        director,
-        anio,
-        genero,
-        temporadas,
-        favorita: favorita || false
     };
-    series.push(nuevaSerie);
-    res.status(201).json({ msg: "Serie creada", data: nuevaSerie });
-};
 
-const putSerie = (req, res) => {
-    const serie = series.find(s => s.id === req.params.id);
-    if (!serie) return res.status(404).json({ msg: "Serie no encontrada" });
+    const getSerieById = async (req, res) => {
+    try {
+        const serie = await Serie.findById(req.params.id);
+        if (!serie) return res.status(404).json({ msg: "Serie no encontrada" });
+        res.status(200).json({ msg: "ok", data: serie });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al buscar la serie" });
+    }
+    };
 
-    Object.assign(serie, req.body);
-    res.status(200).json({ msg: "Serie actualizada", data: serie });
-};
+    const postSerie = async (req, res) => {
+    try {
+        const serie = new Serie(req.body);
+        const data = await serie.save();
+        res.status(201).json({ msg: "Serie creada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "No se pudo crear la serie" });
+    }
+    };
 
-const deleteSerie = (req, res) => {
-    const index = series.findIndex(s => s.id === req.params.id);
-    if (index === -1) return res.status(404).json({ msg: "Serie no encontrada" });
-    const eliminada = series.splice(index, 1);
-    res.status(200).json({ msg: "Serie eliminada", data: eliminada[0] });
+    const putSerie = async (req, res) => {
+    try {
+        const data = await Serie.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!data) return res.status(404).json({ msg: "Serie no encontrada" });
+        res.status(200).json({ msg: "Serie actualizada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al actualizar la serie" });
+    }
+    };
+
+    const deleteSerie = async (req, res) => {
+    try {
+        const data = await Serie.findByIdAndDelete(req.params.id);
+        if (!data) return res.status(404).json({ msg: "Serie no encontrada" });
+        res.status(200).json({ msg: "Serie eliminada", data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al eliminar la serie" });
+    }
 };
 
 export { getSeries, getSerieById, postSerie, putSerie, deleteSerie };

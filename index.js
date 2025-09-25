@@ -1,28 +1,25 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 import routerAPI from "./routers/index.js";
 
-const PORT = 3000;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT;
+const URI_DB = process.env.URI_DB;
 
 app.use(express.json());
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next();
-});
+app.use("/", express.static("public"));
 
-app.use(express.static(path.join(__dirname, "public")));
+mongoose.connect(URI_DB);
+const db = mongoose.connection;
+
+db.on("error", () => console.error("❌ No se pudo conectar a MongoDB"));
+db.once("open", () => console.log("✅ Conectado correctamente a MongoDB"));
 
 routerAPI(app);
 
-app.use((req, res) => {
-    res.status(404).json({ message: "Endpoint no encontrado" });
-});
-
 app.listen(PORT, () => {
-    console.log(`🟢 API de Películas corriendo en http://localhost:${PORT}`);
+    console.log(`🟢 API corriendo en http://localhost:${PORT}`);
 });
