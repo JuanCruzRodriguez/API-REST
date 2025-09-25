@@ -98,7 +98,7 @@ API-REST/
 
 ## Endpoints
 
-Películas
+###Películas
 | Método | Endpoint           | Descripción                |
 | ------ | ------------------ | -------------------------- |
 | GET    | /api/peliculas     | Listar todas las películas |
@@ -119,7 +119,7 @@ Ejemplo JSON para POST /api/peliculas
 }
 ```
 
-Series
+###Series
 | Método | Endpoint        | Descripción             |
 | ------ | --------------- | ----------------------- |
 | GET    | /api/series     | Listar todas las series |
@@ -139,7 +139,7 @@ Ejemplo JSON para POST /api/series
 }
 ```
 
-Usuarios
+###Usuarios
 | Método | Endpoint   | Descripción               |
 | ------ | ---------- | ------------------------- |
 | GET    | /api/users | Listar todos los usuarios |
@@ -160,3 +160,4 @@ Ejemplo JSON para POST /api/users
 Licencia
 
 Este proyecto está bajo la Licencia MIT.
+
