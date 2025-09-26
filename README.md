@@ -24,7 +24,7 @@ API REST desarrollada con **Node.js**, **Express** y **MongoDB**, que permite ge
 
 ---
 
-## Descripción
+## 1. Descripción
 
 Esta API permite:
 
@@ -36,7 +36,7 @@ Los datos se almacenan en una base de datos **MongoDB**, y se utilizan **modelos
 
 ---
 
-## Instalación
+## 2. Instalación
 
 1. Clonar el repositorio:
 
@@ -66,7 +66,7 @@ npm start
 
 ---
 
-## Estructura de Carpetas
+## 3. Estructura de Carpetas
 
 ```bash
 API-REST/
@@ -98,7 +98,7 @@ API-REST/
 
 ---
 
-## Endpoints
+## 4. Endpoints
 
 **• Películas**
 | Método | Endpoint           | Descripción                |
@@ -162,6 +162,7 @@ Ejemplo JSON para POST /api/users
 Licencia
 
 Este proyecto está bajo la Licencia MIT.
+
 
 
 
