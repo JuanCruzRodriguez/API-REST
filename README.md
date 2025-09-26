@@ -1,12 +1,14 @@
-Alumno: Juan Cruz Rodríguez
-Materia: Aplicaciones Híbridas
-Profesor: Jonathan Emanuel Cruz
-
-Comisión: DWN4AV
-
 # API REST de Películas y Series
 
 API REST desarrollada con **Node.js**, **Express** y **MongoDB**, que permite gestionar información de películas y series. Permite operaciones CRUD (Crear, Leer, Actualizar, Eliminar) para ambos recursos, así como gestión de usuarios.
+
+• Alumno: Juan Cruz Rodríguez
+
+• Materia: Aplicaciones Híbridas
+
+• Profesor: Jonathan Emanuel Cruz
+
+• Comisión: DWN4AV
 
 ---
 
@@ -160,5 +162,6 @@ Ejemplo JSON para POST /api/users
 Licencia
 
 Este proyecto está bajo la Licencia MIT.
+
 
 
